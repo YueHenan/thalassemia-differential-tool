@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+*.spec
+
+# PyInstaller output
+*.exe
+*.app
+*.dmg
+*.rar
+*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (not to be shared)
+*.xlsx
+*.xls
+*.csv
+
+# Logs
+*.log
