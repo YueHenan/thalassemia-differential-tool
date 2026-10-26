@@ -39,7 +39,7 @@ class ReportTests(unittest.TestCase):
     def test_json_csv_text_agree_and_spreadsheet_text_is_literal(self):
         for extension in (".json", ".csv", ".txt"):
             export_record(self.record, self.directory / ("report" + extension))
-        loaded = json.loads((self.directory / "report.json").read_text())
+        loaded = json.loads((self.directory / "report.json").read_text(encoding="utf-8"))
         self.assertEqual(loaded, self.record)
         with (self.directory / "report.csv").open(encoding="utf-8-sig", newline="") as stream:
             row = next(csv.DictReader(stream))
@@ -47,7 +47,7 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(float(row["probability_threshold"]), self.model.threshold)
         self.assertEqual(row["model_sha256"], self.model.sha256)
         self.assertEqual(row["patient_name"], "'=SYNTHETIC_TEST")
-        self.assertIn(self.model.equation(), (self.directory / "report.txt").read_text())
+        self.assertIn(self.model.equation(), (self.directory / "report.txt").read_text(encoding="utf-8"))
 
     @unittest.skipUnless(importlib.util.find_spec("openpyxl"), "openpyxl not installed")
     def test_excel_contains_complete_versioned_snapshot(self):

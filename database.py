@@ -1,6 +1,7 @@
 """Local versioned report snapshots; no network and no automatic old-database migration."""
 from __future__ import annotations
 
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -23,7 +24,7 @@ class ScreeningDatabase:
     def __init__(self, db_path: str | Path | None = None):
         self.path = Path(db_path) if db_path is not None else default_database_path()
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             connection.execute("""CREATE TABLE IF NOT EXISTS records (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 created_at TEXT NOT NULL,
@@ -34,7 +35,7 @@ class ScreeningDatabase:
 
     def save_record(self, record: Mapping[str, Any]) -> int:
         prediction = record["prediction"]
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             cursor = connection.execute(
                 "INSERT INTO records(created_at,model_version,model_sha256,record_json) VALUES(?,?,?,?)",
                 (record["created_at"], prediction["model_version"], prediction["model_sha256"],
@@ -42,11 +43,11 @@ class ScreeningDatabase:
             return int(cursor.lastrowid)
 
     def get_record(self, record_id: int) -> dict[str, Any] | None:
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             row = connection.execute("SELECT record_json FROM records WHERE id=?", (record_id,)).fetchone()
         return json.loads(row[0]) if row else None
 
     def get_all_records(self) -> list[dict[str, Any]]:
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             rows = connection.execute("SELECT id,record_json FROM records ORDER BY id DESC").fetchall()
         return [{"database_record_id": row[0], **json.loads(row[1])} for row in rows]
