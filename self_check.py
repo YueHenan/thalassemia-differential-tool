@@ -11,6 +11,10 @@ def run_self_check(model_path=None, reference_path=None):
     model = PredictionModel.load(model_path)
     reference = Path(reference_path or resource_path("tests/synthetic_reference.csv"))
     failures = []
+    expected_sha = resource_path("model.sha256").read_text(encoding="ascii").strip()
+    if model.sha256 != expected_sha:
+        failures.append({"error": "Model bytes do not match the canonical statistical export",
+                         "expected_sha256": expected_sha, "actual_sha256": model.sha256})
     maximum_error = 0.0
     count = 0
     with reference.open(encoding="utf-8-sig", newline="") as stream:
@@ -33,6 +37,6 @@ def run_self_check(model_path=None, reference_path=None):
     if count < 10:
         failures.append({"error": "At least ten independent synthetic vectors are required"})
     return {"passed": not failures, "model_id": model.model_id, "model_version": model.version,
-            "model_sha256": model.sha256, "vectors_checked": count,
+            "model_sha256": model.sha256, "canonical_model_sha256": expected_sha, "vectors_checked": count,
             "maximum_absolute_numeric_error": maximum_error,
             "relative_tolerance": 1e-12, "absolute_tolerance": 1e-11, "failures": failures}

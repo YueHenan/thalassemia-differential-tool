@@ -47,7 +47,7 @@ jobs:
           if ($guiProcess.ExitCode -ne 0) { throw 'Packaged GUI smoke test failed' }
           if (-not (Get-Content $guiOutput -Raw | ConvertFrom-Json).passed) { throw 'GUI smoke report did not pass' }
           Copy-Item $appExe artifacts/
-          Copy-Item model.json,README.md,CHANGELOG.md,LICENSE artifacts/
+          Copy-Item model.json,model.sha256,README.md,CHANGELOG.md,LICENSE artifacts/
           python -m pip freeze | Out-File -Encoding utf8 artifacts/build_dependencies.txt
           @{
             source_commit = '${{ github.sha }}'

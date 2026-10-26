@@ -27,7 +27,7 @@ The interface supports Chinese/English switching, optional patient details, a de
 
 The GUI explicitly allows Hb in g/dL or g/L. Only an explicit g/L selection divides the entered value by 10. The application never changes 89 to 8.9 based on its magnitude. All inputs must be finite and positive. The GUI retains the earlier entry ranges: RBC 1–10, Hb 2–25 g/dL after unit conversion, MCV 30–150, MCH 10–50 and RDW 5–50 in the units above. Thus 89 g/dL is rejected and 89 g/L is explicitly converted to 8.9 g/dL. These are input guardrails, not validated calibration limits or proof of clinical applicability.
 
-The authoritative full-precision parameters, thresholds, input units and performance summaries are in **model.json**. Do not replace them with rounded coefficients from a manuscript or display. The prediction core loads this file, checks its schema, and records its SHA256 in every report. It does not execute expression strings or contact a remote service.
+The authoritative full-precision parameters, thresholds, input units and performance summaries are in **model.json**. Do not replace them with rounded coefficients from a manuscript or display. The prediction core loads this file, checks its schema, and records its SHA256 in every report. `model.sha256` stores the canonical statistical-export checksum; Git preserves LF line endings and the packaged self-test checks this exact checksum on Windows as well as numerical agreement. The core does not execute expression strings or contact a remote service.
 
 ```text
 z = -20.895129342678821 + 4.8701293987448278 × RBC - 2.1100679880988844 × Hb - 0.38007464503954635 × MCV + 1.9589210174899925 × MCH + 0.19210134282197958 × RDW; q = 1 / (1 + exp(-z))

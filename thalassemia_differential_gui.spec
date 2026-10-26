@@ -12,6 +12,7 @@ a = Analysis(
     [str(project / "thalassemia_differential_gui.py")],
     pathex=[str(project)], binaries=[],
     datas=[(str(project / "model.json"), "."),
+           (str(project / "model.sha256"), "."),
            (str(project / "tests" / "synthetic_reference.csv"), "tests"),
            (str(project / "LICENSE"), ".")],
     hiddenimports=["tkinter", "tkinter.ttk", "tkinter.scrolledtext", "sqlite3",

@@ -1,0 +1,2 @@
+# Preserve canonical model bytes and reproducible checksums on Windows checkouts.
+* text=auto eol=lf
